@@ -5,6 +5,12 @@
   "main": "index.js",
   "license": "MIT",
   "author": "Robbie De Lise <robbie@solanex.be>",
+  "homepage": "https://github.com/solanex/smartmockups-cli",
+  "bugs": "https://github.com/solanex/smartmockups-cli/issues",
+  "repository": {
+    "url": "https://github.com/solanex/smartmockups-cli",
+    "type": "git"
+  },
   "dependencies": {
     "chokidar": "^3.5.1",
     "commander": "^7.2.0",
