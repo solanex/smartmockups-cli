@@ -1,0 +1,5 @@
+- Check if input file exists
+- Check if output file exists
+- Handle if mockup slug doesn't exist
+- Handle if browser gets stuck (global timeout ?)
+- Multi-tab operation ?

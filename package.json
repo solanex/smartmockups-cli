@@ -1,0 +1,19 @@
+{
+  "name": "smartmockups-cli",
+  "description": "Basic cli for smartmockups using headless chrome.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Robbie De Lise <robbie@solanex.be>",
+  "dependencies": {
+    "chokidar": "^3.5.1",
+    "commander": "^7.2.0",
+    "dotenv": "^8.2.0",
+    "puppeteer": "^8.0.0",
+    "uuid": "^8.3.2"
+  },
+  "files": ["index.js", ".env.example"],
+  "bin": {
+    "smartmockups-cli": "./index.js"
+  }
+}
