@@ -8,7 +8,7 @@ const { v4 } = require('uuid');
 const chokidar = require('chokidar');
 const { program } = require('commander');
 
-program.version('0.0.1')
+program.version('0.0.3')
        .requiredOption('-i, --input <png>', 'input png file to send to SmartMockups')
        .requiredOption('-m, --mockups <mockup...>', '(multiple) mockup slugs to create')
        .option('-o, --output <path>', 'output path to save mockups')
@@ -57,7 +57,7 @@ const result = [];
     await page.waitForTimeout(1000);
 
     //check if there is a login button
-    let loginBtn = await page.$('a[href="/login"]');
+    let loginBtn = await page.$('button.NoUserLogin_btn__1cP35');
     if (loginBtn)
         await login(page);
 
@@ -65,13 +65,13 @@ const result = [];
         await doMockup(page, mockup)
 
     await browser.close();
-    console.log(result);
+    console.log(JSON.stringify(result));
     process.exit(1);
 
 })();
 
 const login = async (page) => {
-    await page.click('a[href="/login"]');
+    await page.click('button.NoUserLogin_btn__1cP35');
     await page.waitForTimeout(2000);
     await page.waitForSelector('form input[type="email"]');
 
@@ -81,9 +81,9 @@ const login = async (page) => {
     await page.focus('form input[type="password"]');
     await page.keyboard.type(process.env.SMARTMOCKUPS_PASSWORD);
 
-    await page.click('form button');
-    await page.waitForNavigation();
-    await page.waitForTimeout(1000);
+    await page.click('div.Login_loginButton__1IlgB button');
+    //await page.waitForNavigation();
+    await page.waitForTimeout(5000);
 
     //save our cookies for reuse later
     if (process.env.SMARTMOCKUPS_USECOOKIE) {
@@ -95,18 +95,18 @@ const login = async (page) => {
 const doMockup = (page, mockup) => {
     return new Promise(async resolve => {
         await page.goto(process.env.SMARTMOCKUPS_BASEURL + '/mockup/' + mockup);
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(2000);
         await page.waitForSelector('span[data-cy="uploadFromBtn"]')
 
         await page.click('span[data-cy="uploadFromBtn"]');
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(2000);
 
         let fileInput = await page.$('input[data-cy="fileUploadBtn"]');
         await fileInput.uploadFile(design);
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(5000);
 
         await page.click('div.download-options-dropdown button');
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(2000);
 
         let downloadPath = tmpdir + '/' + v4();
         await fs.mkdir(downloadPath, err => {(err == null) || console.log(err)});
@@ -124,7 +124,7 @@ const doMockup = (page, mockup) => {
         });
 
         watcher.on('add', async dlfile => {
-            let nicename = output + path.parse(design).name + '-' + mockup.match(/^([\w-]+)-\w+$/)[1] + path.extname(dlfile);
+            let nicename = output + path.parse(design).name + '-' + mockup + path.extname(dlfile);
             verbose && console.log('downloaded', dlfile, nicename);
             await fs.rename(dlfile, nicename);
             await fs.rmdir(downloadPath);
